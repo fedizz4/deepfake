@@ -1,0 +1,8 @@
+torch
+torchvision
+fastapi
+uvicorn
+streamlit
+mlflow
+opencv-python
+timm
