@@ -1,1 +1,65 @@
 # Docker Compose configuration
+# docker/docker-compose.yml
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: deepfake-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../models:/app/models
+      - ../mlruns:/app/mlruns
+      - ../data:/app/data
+      - ../logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - MLFLOW_TRACKING_URI=file:/app/mlruns
+    restart: unless-stopped
+    networks:
+      - deepfake-network
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.streamlit
+    container_name: deepfake-frontend
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+    environment:
+      - API_URL=http://api:8000
+    volumes:
+      - ../frontend:/app/frontend
+    restart: unless-stopped
+    networks:
+      - deepfake-network
+
+  mlflow:
+    image: python:3.9-slim
+    container_name: deepfake-mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../mlruns:/mlruns
+    working_dir: /app
+    command: >
+      sh -c "pip install mlflow &&
+             mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri file:/mlruns"
+    restart: unless-stopped
+    networks:
+      - deepfake-network
+
+networks:
+  deepfake-network:
+    driver: bridge
+
+volumes:
+  models:
+  mlruns:
+  data:
+  logs:
