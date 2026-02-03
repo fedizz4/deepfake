@@ -1,40 +1,75 @@
-# Core
-python==3.9
+# ============================================
+# 🎯 CORE - Deep Learning (GTX 1650 Ti OPTIMIZED)
+# ============================================
+# NOTE: Installez PyTorch manuellement avec:
+# pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
 torch==2.1.0
 torchvision==0.16.0
+torchaudio==2.1.0
 
-# Data & Computer Vision
-opencv-python==4.8.1
+# ============================================
+# 🔬 Computer Vision (Deepfake Detection)
+# ============================================
+opencv-python-headless==4.8.1.78
 pillow==10.1.0
 facenet-pytorch==2.5.3
 albumentations==1.3.1
-scikit-learn==1.3.2
-pandas==2.1.3
-numpy==1.24.4
 
-# MLOps & API
-mlflow==2.9.2
+# ============================================
+# 📊 Data Processing
+# ============================================
+numpy==1.24.4
+pandas==2.1.3
+scikit-learn==1.3.2
+scipy==1.11.4
+
+# ============================================
+# 🚀 API & Web (FastAPI + Streamlit)
+# ============================================
 fastapi==0.104.1
-uvicorn==0.24.0
+uvicorn[standard]==0.24.0
 pydantic==2.5.0
+streamlit==1.29.0
 python-multipart==0.0.6
 
-# Frontend
-streamlit==1.29.0
+# ============================================
+# 📈 Visualization
+# ============================================
+matplotlib==3.8.2
+seaborn==0.13.2
 plotly==5.18.0
 
-# Utilities
+# ============================================
+# 🤖 MLOps & Experiment Tracking
+# ============================================
+mlflow==2.9.2
+# wandb==0.16.0  # Optionnel - COMMENTÉ POUR ÉVITER LES CONFLITS
+
+# ============================================
+# 🛠️ Utilities
+# ============================================
 tqdm==4.66.1
-matplotlib==3.8.2
-seaborn==0.13.0
+pyyaml==6.0.1
+python-dotenv==1.0.0
 jupyter==1.0.0
 ipywidgets==8.1.2
 
-# Tests
+# ============================================
+# 🧪 Testing
+# ============================================
 pytest==7.4.3
 pytest-cov==4.1.0
 requests==2.31.0
 
-# Other
-pyyaml==6.0.1
-python-dotenv==1.0.0
+# ============================================
+# 🐳 Docker & Deployment
+# ============================================
+docker==6.1.3
+gunicorn==21.2.0
+
+# ============================================
+# 🎯 GPU Monitoring & Optimization
+# ============================================
+# gpustat==1.0.0  # CONFLIT - À INSTALLER SÉPARÉMENT SI BESOIN
+# nvidia-ml-py==12.535.108  # CONFLIT - À INSTALLER SÉPARÉMENT SI BESOIN
+psutil==5.9.8
