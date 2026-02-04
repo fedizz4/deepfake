@@ -4,21 +4,32 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 from torchvision import models
 
-from dataset import DeepfakeDataset
+from dataset import DeepfakeDataset  # Assure-toi que dataset.py est correct
 
 # -------------------------------
 # CONFIG
 # -------------------------------
 BATCH_SIZE = 32
 LR = 1e-4
-EPOCHS = 5  # tu peux augmenter plus tard
+EPOCHS = 5  # augmente plus tard si tu veux
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-MODEL_PATH = "deepfake_cnn.pth"
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"--- Vérification Hardware ---")
+print(f"Device utilisé : {DEVICE}")
+
+if DEVICE.type == 'cuda':
+    print(f"Nom du GPU : {torch.cuda.get_device_name(0)}")
+    print(f"Mémoire totale : {round(torch.cuda.get_device_properties(0).total_memory / 1024**3, 1)} GB")
+else:
+    print("ATTENTION : Le GPU n'est pas détecté, l'entraînement sera très lent !")
+MODEL_PATH = "models/deepfake_cnn.pth"
 
 # -------------------------------
 # DATASET
 # -------------------------------
+print("Chargement du dataset...")
 full_dataset = DeepfakeDataset(split="train")
+print(f"Dataset chargé avec {len(full_dataset)} images.")
 
 # Split train / val 80/20
 train_size = int(0.8 * len(full_dataset))
@@ -29,7 +40,7 @@ train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 # -------------------------------
-# MODEL (ResNet18 simple)
+# MODEL (ResNet18)
 # -------------------------------
 model = models.resnet18(pretrained=True)
 model.fc = nn.Linear(model.fc.in_features, 2)  # 2 classes : real / deepfake
@@ -88,4 +99,13 @@ for epoch in range(EPOCHS):
 # SAVE MODEL
 # -------------------------------
 torch.save(model.state_dict(), MODEL_PATH)
-print(f"Model saved to {MODEL_PATH}")
+print(f"Modèle sauvegardé dans {MODEL_PATH}")
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"--- Vérification Hardware ---")
+print(f"Device utilisé : {DEVICE}")
+
+if DEVICE.type == 'cuda':
+    print(f"Nom du GPU : {torch.cuda.get_device_name(0)}")
+    print(f"Mémoire totale : {round(torch.cuda.get_device_properties(0).total_memory / 1024**3, 1)} GB")
+else:
+    print("ATTENTION : Le GPU n'est pas détecté, l'entraînement sera très lent !")
