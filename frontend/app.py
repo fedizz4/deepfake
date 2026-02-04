@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 import requests
 from PIL import Image
@@ -5,8 +7,8 @@ from PIL import Image
 # -------------------------------
 # CONFIG
 # -------------------------------
-API_URL = "http://localhost:8000/predict"
-
+# Remplacer localhost par le nom du service défini dans docker-compose.yml
+API_URL = os.getenv("API_URL", "http://localhost:8000/predict")
 st.set_page_config(
     page_title="Deepfake Image Detector",
     page_icon="🕵️",

@@ -8,7 +8,8 @@ import io
 # -------------------------------
 # CONFIG
 # -------------------------------
-MODEL_PATH = "model/model_best.pth"
+# Dans api/inference.py
+MODEL_PATH = "api/model/model_best.pth"  # Vérifie bien ce chemin
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 CLASS_NAMES = ["REAL", "DEEPFAKE"]
 

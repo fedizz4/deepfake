@@ -1,7 +1,3 @@
-# Docker Compose configuration
-# docker/docker-compose.yml
-version: '3.8'
-
 services:
   api:
     build:
@@ -10,14 +6,15 @@ services:
     container_name: deepfake-api
     ports:
       - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - DEVICE=cpu
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
     volumes:
-      - ../models:/app/models
+      - ../api:/app/api  # On monte tout le dossier api pour être sûr
       - ../mlruns:/app/mlruns
       - ../data:/app/data
       - ../logs:/app/logs
-    environment:
-      - PYTHONPATH=/app
-      - MLFLOW_TRACKING_URI=file:/app/mlruns
     restart: unless-stopped
     networks:
       - deepfake-network
@@ -27,12 +24,14 @@ services:
       context: ..
       dockerfile: docker/Dockerfile.streamlit
     container_name: deepfake-frontend
+    # Flags essentiels pour éviter le 403 et permettre l'upload
+    command: streamlit run frontend/app.py --server.address=0.0.0.0 --server.enableCORS=false --server.enableXsrfProtection=false
     ports:
       - "8501:8501"
     depends_on:
       - api
     environment:
-      - API_URL=http://api:8000
+      - API_URL=http://api:8000/predict
     volumes:
       - ../frontend:/app/frontend
     restart: unless-stopped
@@ -40,16 +39,13 @@ services:
       - deepfake-network
 
   mlflow:
-    image: python:3.9-slim
+    image: ghcr.io/mlflow/mlflow:latest
     container_name: deepfake-mlflow
     ports:
       - "5000:5000"
     volumes:
       - ../mlruns:/mlruns
-    working_dir: /app
-    command: >
-      sh -c "pip install mlflow &&
-             mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri file:/mlruns"
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri file:/mlruns --default-artifact-root /mlruns
     restart: unless-stopped
     networks:
       - deepfake-network
@@ -57,9 +53,3 @@ services:
 networks:
   deepfake-network:
     driver: bridge
-
-volumes:
-  models:
-  mlruns:
-  data:
-  logs:
